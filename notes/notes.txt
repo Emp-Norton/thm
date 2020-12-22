@@ -66,3 +66,12 @@ OVERPASS CTF:
 				- create simple script to cat /root/root.txt into a file in james' folder
 				- python -m SimpleHTTPServer 80 --bind <ip>
 					- bear in mind if this server is started in the /server/ directory, the script must be at /server/downloads/src/...
+
+
+SHELL STABILIZATION
+- Netcat:
+	- Once caught reverse shell:
+		- ```python -c 'import pty;pty.spawn("/bin/bash")'``` (Linux only as it almost always has Python and pseudo-terminal)
+		- ```export TERM=xterm``` gives commands such as clear
+		- background shell with CTRL+C
+		- ```stty raw -echo;fg``` foregrounds our current shell without echo, giving autocomplete/arrowkeys/etc 
