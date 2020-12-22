@@ -1,0 +1,11 @@
+# Nmap 7.91 scan initiated Wed Dec 16 11:01:54 2020 as: nmap -sV -o mysql-nmap 10.10.140.0
+Nmap scan report for 10.10.140.0
+Host is up (0.14s latency).
+Not shown: 998 closed ports
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+3306/tcp open  mysql   MySQL 5.7.29-0ubuntu0.18.04.1
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Wed Dec 16 11:02:00 2020 -- 1 IP address (1 host up) scanned in 5.78 seconds
