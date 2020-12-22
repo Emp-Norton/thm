@@ -1,0 +1,68 @@
+Mr Robot CTF:
+
+- Nmap first scanned with Nmap services/scripts/verbose (-sV -sC -vvv) 
+	- nothing very appealing, shows a webserver though
+	- visited webserver, mostly just playful videos and such
+- Nikto second to cover my bases -- still haven't used it effectively
+- Gobuster to check for hidden directories.
+	- /robots.txt had the first flag as a file **FLAG 1**
+		- it also showed a fsocity.dic file available for download, which I did
+	- /images looked promising because it had a MrRobot image sitting there
+		- tried to steg extract from image using the fsocity.dic as a password list, no luck
+	- found /wp-login which I can use to deduce usernames / passwords with Hydra
+
+- Submitted a manual login on the wp-login page to see parameter names (login = log, password = pwd, error message = Invalid username, login/wb-submit= long string not worth repeating, but important to note that in includes the entire chunk of URL (cookies, redirects, etc)
+	- $ hydra -L fsocity.dic -p password-test 10.10.175.84 http-post-form "/wp-login/:log=^USER^&pwd=^PASS^&wp-submit=Log+In&redirect_to=http%3A%2F%2F10.10.175.84%2Fwp-admin%2F&testcookie=1:F=Invalid username"
+	- Hydra returned positive hit on Elliot as username (shocker), so now invert and pass Elliot as name and password list for iterating
+	- IMPORTANT NOTE: Make sure to change the failure parameter in Hydra (F=*) to a success (S=*), in this case, a 302 code for redirection (S=302)
+	- $ hydra -l elliot -P /usr/share/wordlists/rockyou.txt 10.10.158.50 http-post-form "/wp-login/:log=elliot&pwd=^PASS^&wp-submit=Log+In&redirect_to=http%3A%2F%2F10.10.158.50%2Fwp-admin%2F&testcookie=1:S=302"
+		- Elliot / ER28-0652
+
+- A bit unsure what to do, searching wordpress in metasploit
+	- there's a wp-admin shell upload exploit that looks perfect, but kept getting "the target is not using wordpress"
+
+- looked at a writeup and apparently the thing to do is overwrite the wordpress 404 page with a php reverse shell
+	- obviously start the netcat listener (nc -lvpn <port>) and modify the shell script to match
+	- visit a nonexistent page to trigger the shell
+
+- Shell! Yay. Key 2 is in the "robot" user home directory, but we're currently daemon user, need to privesc.
+- No sudo abilities
+- Duh, in the /home/robot directory there are two text files, the second key and a password hash. Hash is readable, decodes to the alphabet as a string
+- Password is obviously robot user's, but can't su without a real shell. 
+	- python -c 'import pty;pty.spawn('/bin/bash')' will give a real shell if python / pty installed
+	- allowed me to su to robot and read second key file
+- Look for suid files "find / -perm 4000 -type f 2> /dev/null
+- Nmap is a SUID file, run in interactive mode to run commands as root "nmap --interactive"
+
+SQL Injection Room:
+- Use the machine from the SQLi labs for this room
+- Using Damn Small Sqli Scanner (github.com/stamparm/DSSS.git) 
+	- "python3 dsss.py -u <ip>/?param=" 
+	- Scanner suggests ID param vuln to error and blind SQLi
+	
+OVERPASS CTF:
+- Ran some Nessus scans and nmap, not much helpful there except an indication that there's a webserver on 80 and ssh on 22.
+- Scans revealed directories of interest /login /admin /downloads.
+- Inspecting code for login.js shows that the input isn't sanitized, but attempts at testing for sqli revealed no luck 
+- However, successful login sets the 'SessionToken' cookie, so maybe just boolean check that it exists for admin page?
+	- Yep. Cookies.set('SessionToken', 123) worked and got access to admin page.
+- Admin page has note about user "James" (spooky) forgetting his password all the time (double spooky) so admin setup an SSH key for him
+	- Admin user seems to be named "Paradox" based on the note he left.
+	- save ssh key into overpass_id_rsa. 
+	- pass this file to ssh2john ```python ssh2john overpass_id_rsa > overpass.hash``` to convert it into a john-readable hashfile
+		- pass this hash to john to crack ```john --wordlist=<wordlist> overpass.hash```
+		- use ```john --show <hasfile>``` to see PW, in this case "james13"
+			- use these creds to login ```ssh -i <key file> james@<ip>``` and give cracked PW
+			- user flag is in user.txt
+	- also a todo.txt file which mentions using the overpass manager for his own password
+	- we can see in this user's home file a hidden file called .overpass
+		- since we have access to overpass' source code on the website, we can see that it uses Rot47 scheme to cipher passwords
+		- reverse this .overpass rot47 online to see the user's system password as hidden by overpass 
+	- Todo file also mentions the build script being automated (think Cron)
+		- look at crontab (/etc/crontab) to see that there's a script run as root which is first pulled from overpass.thm/downloads/src/build.sh
+			- check the hosts file (/etc/hosts) to see that this is a local server (though where are these files? cant find)
+				- fortunately we have full write access to hosts, so we can replace 127.0.0.1 for overpass.thm to our own IP 
+				- cron job will now pull whatever script we host at ip:/downloads/src/build.sh (whatever the curl command is) and run as root
+				- create simple script to cat /root/root.txt into a file in james' folder
+				- python -m SimpleHTTPServer 80 --bind <ip>
+					- bear in mind if this server is started in the /server/ directory, the script must be at /server/downloads/src/...
