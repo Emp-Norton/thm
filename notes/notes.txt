@@ -69,9 +69,14 @@ OVERPASS CTF:
 
 
 SHELL STABILIZATION
-- Netcat:
-	- Once caught reverse shell:
+- Once caught reverse shell:
+	- Netcat:
 		- ```python -c 'import pty;pty.spawn("/bin/bash")'``` (Linux only as it almost always has Python and pseudo-terminal)
 		- ```export TERM=xterm``` gives commands such as clear
 		- background shell with CTRL+C
 		- ```stty raw -echo;fg``` foregrounds our current shell without echo, giving autocomplete/arrowkeys/etc 
+	- rlwrap:
+		- just add rlwrap before typical nc listener ```rlwrap nc -lvnp <port>``` 
+		- repeat background/foreground trick above using stty
+	- Socat:
+		- 
