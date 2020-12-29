@@ -108,3 +108,6 @@ SHELL STABILIZATION
 			- Windows:
 				- should have static compiled binary of netcat with -e option, or send over executable with such then: ```nc -lvpn <port> -e /bin/bash```
 		- change terminal size with stty <rows or cols> <num>
+	- msfvenom:
+		- Syntax:
+			- Standard pattern: msfvenom -p <payload> <options>
