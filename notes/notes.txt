@@ -115,3 +115,7 @@ SHELL STABILIZATION
 				- -f specifies output format (e.g. exe/war/py/elf/aspx etc)
 				- -o specifies output file (e.g. shell.exe)
 				- -lhost=/lport= specifies ip/port to connect back to
+			- Stage indicator:
+				- "_" for stageless
+				- "/" for staged
+				- E.g. windows/x64/meterpreter/reverse_tcp vs windows/x64/meterpreter_reverse_tcp
