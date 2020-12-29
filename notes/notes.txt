@@ -111,3 +111,7 @@ SHELL STABILIZATION
 	- msfvenom:
 		- Syntax:
 			- Standard pattern: msfvenom -p <payload> <options>
+			- Options:
+				- -f specifies output format (e.g. exe/war/py/elf/aspx etc)
+				- -o specifies output file (e.g. shell.exe)
+				- -lhost=/lport= specifies ip/port to connect back to
