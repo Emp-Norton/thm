@@ -108,3 +108,14 @@ SHELL STABILIZATION
 			- Windows:
 				- should have static compiled binary of netcat with -e option, or send over executable with such then: ```nc -lvpn <port> -e /bin/bash```
 		- change terminal size with stty <rows or cols> <num>
+	- msfvenom:
+		- Syntax:
+			- Standard pattern: msfvenom -p <payload> <options>
+			- Options:
+				- -f specifies output format (e.g. exe/war/py/elf/aspx etc)
+				- -o specifies output file (e.g. shell.exe)
+				- -lhost=/lport= specifies ip/port to connect back to
+			- Stage indicator:
+				- "_" for stageless
+				- "/" for staged
+				- E.g. windows/x64/meterpreter/reverse_tcp vs windows/x64/meterpreter_reverse_tcp
